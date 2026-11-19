@@ -20,6 +20,7 @@ const server = app.listen(PORT, () => {
   logger.info(`Server running on port ${PORT}`);
 });
 
+/** @param {Error} err */
 server.on('error', (err) => {
   logger.error({ err }, 'Failed to start server');
   process.exit(1);

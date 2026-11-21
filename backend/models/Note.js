@@ -16,6 +16,7 @@ const noteSchema = new mongoose.Schema(
       required: true,
       trim: true,
       validate: {
+        /** @type {(value: string) => boolean} */
         validator: (value) => Array.from(value).length <= 100,
         message: 'Title must be at most 100 characters',
       },

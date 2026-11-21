@@ -26,6 +26,8 @@ app.get('/health', (req, res) => {
 
 app.use('/api/auth', rateLimit({ windowMs: 15 * 60 * 1000, limit: 100 }));
 app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/notes', rateLimit({ windowMs: 15 * 60 * 1000, limit: 300 }));
+app.use('/api/notes', require('./routes/noteRoutes'));
 
 app.use(errorHandler);
 

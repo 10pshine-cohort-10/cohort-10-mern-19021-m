@@ -4,16 +4,36 @@ const User = require('../models/User');
 const AppError = require('../utils/AppError');
 const logger = require('../utils/logger');
 
+/**
+ * @typedef {import('../validators/authValidator').SignupInput} SignupInput
+ * @typedef {import('../validators/authValidator').LoginInput} LoginInput
+ * @typedef {{ _id: import('mongoose').Types.ObjectId, name: string, email: string }} UserDoc
+ * @typedef {{ id: import('mongoose').Types.ObjectId, name: string, email: string }} PublicUser
+ * @typedef {{ token: string, user: PublicUser }} AuthResult
+ */
+
 
 const dummyHash = bcrypt.hashSync('dummy-password', 10);
 
+/**
+ * @param {UserDoc} user
+ * @returns {string}
+ */
 const signToken = (user) =>
   jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN || '1d',
   });
 
+/**
+ * @param {UserDoc} user
+ * @returns {PublicUser}
+ */
 const publicUser = (user) => ({ id: user._id, name: user.name, email: user.email });
 
+/**
+ * @param {SignupInput} input
+ * @returns {Promise<AuthResult>}
+ */
 exports.signup = async ({ name, email, password }) => {
   const existing = await User.findOne({ email });
   if (existing) {
@@ -27,6 +47,10 @@ exports.signup = async ({ name, email, password }) => {
   return { token: signToken(user), user: publicUser(user) };
 };
 
+/**
+ * @param {LoginInput} input
+ * @returns {Promise<AuthResult>}
+ */
 exports.login = async ({ email, password }) => {
   const user = await User.findOne({ email });
   const valid = await bcrypt.compare(password, user ? user.password : dummyHash);

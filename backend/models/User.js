@@ -1,5 +1,14 @@
 const mongoose = require('mongoose');
 
+/**
+ * @typedef {Object} UserFields
+ * @property {string} name
+ * @property {string} email
+ * @property {string} password
+ */
+
+/** @type {import('mongoose').Schema<UserFields>} */
+
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },

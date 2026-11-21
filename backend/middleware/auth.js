@@ -1,5 +1,11 @@
 const jwt = require('jsonwebtoken');
 
+/**
+ * @param {import('express').Request & { userId?: string }} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ */
+
 module.exports = (req, res, next) => {
   const header = req.headers.authorization || '';
   const token = /^Bearer /i.test(header) ? header.slice(7) : null;

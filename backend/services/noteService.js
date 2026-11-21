@@ -9,9 +9,18 @@ const logger = require('../utils/logger');
  * @typedef {import('../validators/noteValidator').ListNotesQuery} ListNotesQuery
  */
 
+/**
+ * @param {string} text
+ * @returns {string}
+ */
 const escapeRegex = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 
+/**
+ * @template {{ content?: string }} T
+ * @param {T} input
+ * @returns {T}
+ */
 const cleanContent = (input) =>
   input.content === undefined ? input : { ...input, content: sanitizeHtml(input.content) };
 
@@ -28,7 +37,7 @@ exports.listNotes = async (userId, { search, page, limit }) => {
 
   const [items, total] = await Promise.all([
     Note.find(filter)
-      .sort({ updatedAt: -1 })
+      .sort({ updatedAt: -1, _id: -1 })
       .skip((page - 1) * limit)
       .limit(limit),
     Note.countDocuments(filter),

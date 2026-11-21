@@ -11,7 +11,15 @@ const mongoose = require('mongoose');
 const noteSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
-    title: { type: String, required: true, trim: true, maxlength: 100 },
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+      validate: {
+        validator: (value) => Array.from(value).length <= 100,
+        message: 'Title must be at most 100 characters',
+      },
+    },
     content: { type: String, default: '' },
   },
   { timestamps: true }

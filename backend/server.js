@@ -20,17 +20,22 @@ app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173' }));
 app.use(express.json());
 app.use(pinoHttp({ logger }));
 
-app.get('/health', (req, res) => {
+/** @type {import('express').RequestHandler} */
+const health = (req, res) => {
   res.json({ status: 'ok' });
-});
+};
+app.get('/health', health);
 
 app.use('/api/auth', rateLimit({ windowMs: 15 * 60 * 1000, limit: 100 }));
 app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/notes', rateLimit({ windowMs: 15 * 60 * 1000, limit: 300 }));
+app.use('/api/notes', require('./routes/noteRoutes'));
 
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
+/** @returns {Promise<void>} */
 const start = async () => {
   try {
     await connectDB();
